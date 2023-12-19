@@ -1,0 +1,31 @@
+basically group the accounts into segments/ clusters 
+and then show that these segments show shared behaviour based on the data 
+
+
+Finding patterns in dataset using manipulation/classification. 
+Reason: not immediately obvious goal (open-ended things to do with dataset.)
+making predictions and evaluating accuracy to see important/unimportant features.
+^ directly gives us role of different features in dataset and classes.
+
+Now we want to focus on how those features describe individual groups and classes.
+also want to see magnitude of value (all from same place? Variance of income?)
+
+
+1. PCA --> preserve most important/relevant features
+--> see which are the most variant dimensions. And limit without compressing. 
+dont directly pipeline PCA --> k-means. Instead just find the most interesting features and then only consider them in the k-means.
+
+2. k-means clustering?
+Centroids have dimension --> determine levels of relevant features
+
+How to know accuracy?
+metric --> measure cluster density (avg dist from centroid?)
+
+Ask iQor: what do you want to classify? One feature.
+Do feature importance for that classification question.
+
+- try different classification questions?
+see what features are consistent throughout different classification questions
+
+confusion matrix?
+[!/Users/jameskoga/dev/iQor/referencephotos/confusionmatrix.png]
