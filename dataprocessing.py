@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 import numpy as np
 from scipy.linalg import eigh
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 curr_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -59,3 +61,13 @@ def k_means(data, k, max_iterations=100, tol=1e-4):
 
         centroids = new_centroids
     return labels, centroids
+
+
+def get_corr_matrix(data):
+    return data.corr()
+
+
+def visualize_corr_matrix(data):
+    correlation_matrix = data.corr()
+    sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", linewidths=0.5)
+    plt.show()

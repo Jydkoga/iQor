@@ -10,3 +10,6 @@ By using PCA, we lose all meaning in the dimensions. Instead, we can try to use 
 ## Using K-means without PCA
 1. use K-means clustering algorithm for unsupervised learning.
 ![K-means w/o PCA. 4 centroids](figures/k-meansNoPCA.png)
+
+## Visualizing the Correlation between the data
+![Correlation matrix](figures/correlation_matrix.png)
