@@ -8,6 +8,11 @@ from sklearn.impute import SimpleImputer
 # print("Explained Variance Ratio:", pca.explained_variance_ratio_)
 
 data = datpr.data
+
+# we set our threshold to 2 based on the dendrogram
+datpr.heirarchical_clustering(data, 2)
+
+
 k = 4
 labels, centroids = datpr.k_means(data, k)
 

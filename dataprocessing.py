@@ -8,6 +8,8 @@ import numpy as np
 from scipy.linalg import eigh
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.cluster import hierarchy
+from scipy.spatial import distance
 
 curr_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -63,6 +65,7 @@ def k_means(data, k, max_iterations=100, tol=1e-4):
     return labels, centroids
 
 
+# Implementing a correlation matrix to see the correlation between data in the csv file
 def get_corr_matrix(data):
     return data.corr()
 
@@ -71,3 +74,33 @@ def visualize_corr_matrix(data):
     correlation_matrix = data.corr()
     sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", linewidths=0.5)
     plt.show()
+
+
+# Using the correlation matrix, we use the hierarchical clustering algorithm instead of k-means
+# input: data, number of clusters. In our case, we set numClu to 2 (from dendrogram graph)
+def hierarchical_clustering(data, numClu):
+    # Finding distances between values in the correlation matrix
+    correlation_values = np.asarray(get_corr_matrix(data).values)
+    distance_matrix = hierarchy.linkage(
+        distance.pdist(correlation_values), method="ward"
+    )
+
+    # plotting dendrogram
+    dn = hierarchy.dendrogram(distance_matrix, labels=data.columns)
+    plt.show()
+
+    # setting threshold to determine number of clusters
+    threshold = numClu
+
+    labels = hierarchy.fcluster(distance_matrix, threshold, criterion="distance")
+
+    # Print the columns grouped by their clusters
+    clustered_columns = {}
+    for col, label in zip(data.columns, labels):
+        if label not in clustered_columns:
+            clustered_columns[label] = [col]
+        else:
+            clustered_columns[label].append(col)
+
+    for cluster, columns in clustered_columns.items():
+        print(f"Cluster {cluster}: {columns}")
