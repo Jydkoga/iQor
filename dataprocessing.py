@@ -33,11 +33,6 @@ def principal_component_analysis(data, num_components):
     return new_df, pca
 
 
-new_df, pca = principal_component_analysis(data, num_components=5)
-# Each index is the explained percentage of variance in data
-print("Explained Variance Ratio:", pca.explained_variance_ratio_)
-
-
 def k_means(data, k, max_iterations=100, tol=1e-4):
     # randomly initialize centroids
     centroids = data.values[np.random.choice(len(data), k, replace=False)]
@@ -66,16 +61,21 @@ def k_means(data, k, max_iterations=100, tol=1e-4):
     return labels, centroids
 
 
+# new_df, pca = principal_component_analysis(data, num_components=5)
+
+# Each index is the explained percentage of variance in data
+# print("Explained Variance Ratio:", pca.explained_variance_ratio_)
+
 k = 4
-labels, centroids = k_means(new_df, k)
+labels, centroids = k_means(data, k)
 
 print("Final Centroids:\n", centroids)
 print("Labels:\n", labels)
 
 # visualize first two dimensions of clusters
 plt.scatter(
-    new_df["PC1"],
-    new_df["PC2"],
+    data["RSK_LVL"],
+    data["BALANCE"],
     c=labels,
     cmap="viridis",
     s=50,
@@ -85,8 +85,8 @@ plt.scatter(
 plt.scatter(
     centroids[:, 0], centroids[:, 1], c="red", marker="X", s=200, label="Centroids"
 )
-plt.title("K-Means Clustering Results")
-plt.xlabel("Principal Component 1")
-plt.ylabel("Principal Component 2")
+plt.title("K-Means Clustering Results without PCA")
+plt.xlabel("RSK_LVL")
+plt.ylabel("BALANCE")
 plt.legend()
 plt.show()
