@@ -3,18 +3,15 @@ import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-from sklearn.impute import SimpleImputer
 import numpy as np
-from scipy.linalg import eigh
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.cluster import hierarchy
 from scipy.spatial import distance
 
+# finding the csv file
 curr_directory = os.path.dirname(os.path.abspath(__file__))
-
 file_name = "iqor_data.csv"
-
 file_path = os.path.join(curr_directory, file_name)
 
 # Load data from the CSV file using pandas
@@ -22,7 +19,7 @@ data = pd.read_csv(file_path)
 
 
 # Input: data, num_components (either integer of decimal (if want to retain 50% of data, set num_components = 0.5))
-def principal_component_analysis(data, num_components):
+def pca(data, num_components):
     # standardizing features
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(data)
@@ -37,7 +34,27 @@ def principal_component_analysis(data, num_components):
     return new_df, pca
 
 
-def k_means(data, k, max_iterations=100, tol=1e-4):
+# visualizing pca given the output of our pca() function
+# input: string dim1, dim2 is PC1, PC2, PC3 ... up to PCn where n = max number of components set in pca() function
+def visualize_pca(new_df, dim1, dim2):
+    num1 = dim1[-1]
+    num2 = dim2[-1]
+    # Scatter plot
+    plt.figure(figsize=(10, 8))
+    sns.scatterplot(x=dim1, y=dim2, data=new_df)
+    plt.title(f"PCA Results - {dim1} vs {dim2}")
+    plt.xlabel(f"Principal Component {num1} ({dim1})")
+    plt.ylabel(f"Principal Component {num2} ({dim2})")
+    plt.show()
+
+
+# Input: data, int k = num centroids, boolean usePCA, int num_components for PCA (Default 5),
+# (int) max_iterations for number of iterations k-means runs (default 100), float tolerance on when to stop running k-means (default 1e-4)
+def k_means(data, k, usePCA, num_components=5, max_iterations=100, tol=1e-4):
+    # if we want to use k_means with PCA
+    if usePCA:
+        data, _ = pca(data, num_components)
+
     # randomly initialize centroids
     centroids = data.values[np.random.choice(len(data), k, replace=False)]
 
@@ -63,6 +80,33 @@ def k_means(data, k, max_iterations=100, tol=1e-4):
 
         centroids = new_centroids
     return labels, centroids
+
+
+# input: labels and centroids from k_means function. usePCA is a boolean that is set to true if using PCA.
+# Define two strings, axis 1 and axis 2 corresponding to which labels you want to show on the plot.
+def visualize_kmeans(labels, centroids, usePCA, axis1, axis2):
+    # possible dimensions: AREA_CODE,RSK_LVL,LIMIT,BALANCE,PAYMENT,OCL_AMT,BILL_DAY,CYCL_DLNQ,LAST_AMT,LST_DBT_PMT,LIQ_OFFER_AMT,COLLECTABLE_BAL
+    # visualize first two dimensions of clusters
+    plt.scatter(
+        data[axis1],
+        data[axis2],
+        c=labels,
+        cmap="viridis",
+        s=50,
+        alpha=0.8,
+        edgecolors="w",
+    )
+    plt.scatter(
+        centroids[:, 0], centroids[:, 1], c="red", marker="X", s=200, label="Centroids"
+    )
+    if usePCA:
+        plt.title("K-Means Clustering Results with PCA")
+    else:
+        plt.title("K-Means Clustering Results without PCA")
+    plt.xlabel(axis1)
+    plt.ylabel(axis2)
+    plt.legend()
+    plt.show()
 
 
 # Implementing a correlation matrix to see the correlation between data in the csv file
