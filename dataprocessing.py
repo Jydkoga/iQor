@@ -166,27 +166,29 @@ def hierarchical_clustering(data, numClu):
 
 # without using correlation matrix
 # from https://github.com/OpenClassrooms-Student-Center/Multivariate-Exploratory-Analysis/blob/master/3b.%20Hierarchical%20Clustering.ipynb
-def h_cluster(data1):
+def h_cluster(data):
+    # Standardize the data
     scaler = StandardScaler()
-    data = scaler.fit_transform(data1)
+    data_scaled = scaler.fit_transform(data)
+
+    # Perform hierarchical clustering
     hier_cluster = AgglomerativeClustering(
         affinity="euclidean", linkage="ward", compute_full_tree=True
     )
     hier_cluster.set_params(n_clusters=2)
-    clusters = hier_cluster.fit_predict(data)
-    data_scaled_clustered = pd.DataFrame(data, columns=data.columns, index=data.index)
-    data_scaled_clustered["cluster"] = clusters
-    sample = data_scaled_clustered[data_scaled_clustered.cluster == 1]
-    Z = hierarchy.linkage(sample, "ward")
-    names = sample.index
+    clusters = hier_cluster.fit_predict(data_scaled)
+
+    # Add cluster labels to the original data
+    data_clustered = pd.DataFrame(data_scaled, columns=data.columns, index=data.index)
+    data_clustered["cluster"] = clusters
+
+    # Perform PCA for visualization
     pca = PCA(n_components=2)
-    pca.fit(data)
+    data_pca = pca.fit_transform(data_scaled)
 
-    # Transfor the scaled data to the new PCA space
-    data_reduced = pca.transform(data)
-
+    # Visualize the clustered data
     display_factorial_planes(
-        data_reduced, 2, pca, [(0, 1)], illustrative_var=clusters, alpha=0.8
+        data_pca, 2, pca, [(0, 1)], illustrative_var=clusters, alpha=0.8
     )
 
 
@@ -251,10 +253,12 @@ def visualize_hcluster(data):
     data_norm = normalize(data)
     pca = PCA(n_components=2)
     pca.fit(data_norm)
+    visualize_pca(data_norm, "PC1", "PC2")
 
     data_reduced = pca.transform(data_norm)
 
     labels = hierarchical_clustering(data, numClu=2)
+    print("i got to the point right after hierarchical_clustering")
 
     display_factorial_planes(
         data_reduced, 2, pca, [(0, 1)], illustrative_var=labels, alpha=0.8
