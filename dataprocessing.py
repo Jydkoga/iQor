@@ -33,15 +33,13 @@ def normalize(data):
 
 
 # Input: data, num_components (either integer of decimal (if want to retain 50% of data, set num_components = 0.5))
-def pca(data, num_components):
-    # standardizing features
+def pca(data1, num_components):
     scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(data)
-
+    data = scaler.fit_transform(data1)
     # Either choose # featuers or number pca dimensions
     pca = PCA(n_components=num_components)
 
-    pca_result = pca.fit_transform(scaled_data)
+    pca_result = pca.fit_transform(data)
     new_df = pd.DataFrame(
         data=pca_result, columns=[f"PC{i}" for i in range(1, pca_result.shape[1] + 1)]
     )
@@ -164,6 +162,32 @@ def hierarchical_clustering(data, numClu):
     for cluster, columns in clustered_columns.items():
         print(f"Cluster {cluster}: {columns}")
     return labels
+
+
+# without using correlation matrix
+# from https://github.com/OpenClassrooms-Student-Center/Multivariate-Exploratory-Analysis/blob/master/3b.%20Hierarchical%20Clustering.ipynb
+def h_cluster(data1):
+    scaler = StandardScaler()
+    data = scaler.fit_transform(data1)
+    hier_cluster = AgglomerativeClustering(
+        affinity="euclidean", linkage="ward", compute_full_tree=True
+    )
+    hier_cluster.set_params(n_clusters=2)
+    clusters = hier_cluster.fit_predict(data)
+    data_scaled_clustered = pd.DataFrame(data, columns=data.columns, index=data.index)
+    data_scaled_clustered["cluster"] = clusters
+    sample = data_scaled_clustered[data_scaled_clustered.cluster == 1]
+    Z = hierarchy.linkage(sample, "ward")
+    names = sample.index
+    pca = PCA(n_components=2)
+    pca.fit(data)
+
+    # Transfor the scaled data to the new PCA space
+    data_reduced = pca.transform(data)
+
+    display_factorial_planes(
+        data_reduced, 2, pca, [(0, 1)], illustrative_var=clusters, alpha=0.8
+    )
 
 
 # pasted from: https://github.com/OpenClassrooms-Student-Center/Multivariate-Exploratory-Analysis/blob/master/functions.py

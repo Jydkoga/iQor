@@ -31,3 +31,6 @@ datpr.hierarchical_clustering(data, 3)
 
 # TODO: fix this
 datpr.visualize_hcluster(data)
+
+# broken
+# datpr.h_cluster(data)
