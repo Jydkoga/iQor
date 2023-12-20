@@ -163,3 +163,75 @@ def hierarchical_clustering(data, numClu):
 
     for cluster, columns in clustered_columns.items():
         print(f"Cluster {cluster}: {columns}")
+    return labels
+
+
+# pasted from: https://github.com/OpenClassrooms-Student-Center/Multivariate-Exploratory-Analysis/blob/master/functions.py
+def display_factorial_planes(
+    X_projected, n_comp, pca, axis_ranks, labels=None, alpha=1, illustrative_var=None
+):
+    """Display a scatter plot on a factorial plane, one for each factorial plane"""
+
+    # For each factorial plane
+    for d1, d2 in axis_ranks:
+        if d2 < n_comp:
+            # Initialise the matplotlib figure
+            fig = plt.figure(figsize=(7, 6))
+
+            # Display the points
+            if illustrative_var is None:
+                plt.scatter(X_projected[:, d1], X_projected[:, d2], alpha=alpha)
+            else:
+                illustrative_var = np.array(illustrative_var)
+                for value in np.unique(illustrative_var):
+                    selected = np.where(illustrative_var == value)
+                    plt.scatter(
+                        X_projected[selected, d1],
+                        X_projected[selected, d2],
+                        alpha=alpha,
+                        label=value,
+                    )
+                plt.legend()
+
+            # Display the labels on the points
+            if labels is not None:
+                for i, (x, y) in enumerate(X_projected[:, [d1, d2]]):
+                    plt.text(x, y, labels[i], fontsize="14", ha="center", va="center")
+
+            # Define the limits of the chart
+            boundary = np.max(np.abs(X_projected[:, [d1, d2]])) * 1.1
+            plt.xlim([-boundary, boundary])
+            plt.ylim([-boundary, boundary])
+
+            # Display grid lines
+            plt.plot([-100, 100], [0, 0], color="grey", ls="--")
+            plt.plot([0, 0], [-100, 100], color="grey", ls="--")
+
+            # Label the axes, with the percentage of variance explained
+            plt.xlabel(
+                "PC{} ({}%)".format(
+                    d1 + 1, round(100 * pca.explained_variance_ratio_[d1], 1)
+                )
+            )
+            plt.ylabel(
+                "PC{} ({}%)".format(
+                    d2 + 1, round(100 * pca.explained_variance_ratio_[d2], 1)
+                )
+            )
+
+            plt.title("Projection of points (on PC{} and PC{})".format(d1 + 1, d2 + 1))
+            plt.show()
+
+
+def visualize_hcluster(data):
+    data_norm = normalize(data)
+    pca = PCA(n_components=2)
+    pca.fit(data_norm)
+
+    data_reduced = pca.transform(data_norm)
+
+    labels = hierarchical_clustering(data, numClu=2)
+
+    display_factorial_planes(
+        data_reduced, 2, pca, [(0, 1)], illustrative_var=labels, alpha=0.8
+    )
