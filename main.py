@@ -28,6 +28,3 @@ datpr.visualize_corr_matrix(data)
 # Hierarchical clustering
 # we set our threshold to 3 based on the dendrogram, cutting the tallest vertical line.
 datpr.hierarchical_clustering(data, 3)
-
-# agglomerate clustering
-datpr.agglomerative_clustering(data, 3)

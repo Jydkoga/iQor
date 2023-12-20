@@ -142,13 +142,14 @@ def hierarchical_clustering(data, numClu):
     distance_matrix = hierarchy.linkage(
         distance.pdist(correlation_values), method="ward"
     )
-
-    # plotting dendrogram
-    dn = hierarchy.dendrogram(distance_matrix, labels=data.columns)
-    plt.show()
-
     # setting threshold to determine number of clusters
     threshold = numClu
+
+    # plotting dendrogram
+    dn = hierarchy.dendrogram(
+        distance_matrix, labels=data.columns, color_threshold=threshold
+    )
+    plt.show()
 
     labels = hierarchy.fcluster(distance_matrix, threshold, criterion="distance")
 
