@@ -26,5 +26,8 @@ datpr.visualize_kmeans(labels_no, centroids_no, False, "RSK_LVL", "BALANCE")
 datpr.visualize_corr_matrix(data)
 
 # Hierarchical clustering
-# we set our threshold to 2 based on the dendrogram
-datpr.heirarchical_clustering(data, 2)
+# we set our threshold to 3 based on the dendrogram, cutting the tallest vertical line.
+datpr.hierarchical_clustering(data, 3)
+
+# agglomerate clustering
+datpr.agglomerative_clustering(data, 3)

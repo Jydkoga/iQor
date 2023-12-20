@@ -8,6 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.cluster import hierarchy
 from scipy.spatial import distance
+from sklearn.cluster import AgglomerativeClustering
 
 # finding the csv file
 curr_directory = os.path.dirname(os.path.abspath(__file__))
@@ -16,6 +17,19 @@ file_path = os.path.join(curr_directory, file_name)
 
 # Load data from the CSV file using pandas
 data = pd.read_csv(file_path)
+
+
+# normalize data
+def normalize(data):
+    # copy the data
+    df_max_scaled = data.copy()
+
+    # apply normalization techniques
+    for column in df_max_scaled.columns:
+        df_max_scaled[column] = (
+            df_max_scaled[column] / df_max_scaled[column].abs().max()
+        )
+    return df_max_scaled
 
 
 # Input: data, num_components (either integer of decimal (if want to retain 50% of data, set num_components = 0.5))
