@@ -29,5 +29,5 @@ datpr.visualize_corr_matrix(data)
 # we set our threshold to 3 based on the dendrogram, cutting the tallest vertical line.
 datpr.hierarchical_clustering(data, 3)
 
-# broken
+# hierarchical clustering with pca
 datpr.h_cluster(data.head(1000))
