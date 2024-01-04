@@ -13,3 +13,9 @@ By using PCA, we lose all meaning in the dimensions. Instead, we can try to use 
 
 ## Visualizing the Correlation between the data
 ![Correlation matrix](figures/correlation_matrix.png)
+
+## Using a Dendrogram
+![Dendrogram](figures/dendrogram.png)
+
+## Hierarchical clustering
+![Hierarchical Clustering](figures/Hierarchical_cluster_w:o_covmatx.png)
